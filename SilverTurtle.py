@@ -3,27 +3,17 @@ def reward_function(params):
     return reward
     
 def reward_by_direction(params):
-    import math
-
-    # Read input variables
-    heading = params['heading']
-
     # Initialize the reward with typical value 
     reward = 2.0
 
-    # Get track direction
-    track_direction = get_track_direction(params)
-
-    # Calculate the difference between the track direction and the heading direction of the car
-    direction_diff = abs(track_direction - heading)
-    if direction_diff > 180:
-        direction_diff = 360 - direction_diff
-
+    direction_diff = get_variance_from_track_direction(params)
+    
     # Penalize the reward if the difference is too large
     DIRECTION_THRESHOLD = 10.0
+
     if direction_diff > DIRECTION_THRESHOLD:
         reward *= 0.5
-
+        
     return reward
 
 def reward_by_speed(params):
@@ -32,22 +22,16 @@ def reward_by_speed(params):
     speed = params['speed']
 
     # Set the speed threshold based your action space 
-    SPEED_THRESHOLD = 5.0 
-
-    # Get track direction
-    track_direction = get_track_direction(params)
-    
+    SPEED_THRESHOLD = 3.0 
+  
+    reward = 2.0
 
     if not all_wheels_on_track:
         # Penalize if the car goes off track
-        reward = 1e-3        
-    else:
-        # High reward if the car stays on track and goes fast
-        reward = 1.0
-
-    #double the reward if it's fast on a straight
-    if (track_direction < 10):
-        reward *= 2
+        reward = 1e-3       
+    elif speed < SPEED_THRESHOLD:
+        # Penalize if the car goes too slow
+        reward *= 0.5 
 
     return reward
 
@@ -66,3 +50,16 @@ def get_track_direction(params):
     # Convert to degree
     track_direction_degrees = math.degrees(track_direction_radians)
     return track_direction_degrees
+
+def get_variance_from_track_direction(params):
+    # Read input variables
+    heading = params['heading']
+
+    # Get track direction
+    track_direction = get_track_direction(params)
+
+    # Calculate the difference between the track direction and the heading direction of the car
+    direction_diff = abs(track_direction - heading)
+    if direction_diff > 180:
+        direction_diff = 360 - direction_diff
+    return direction_diff
