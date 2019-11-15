@@ -8,4 +8,4 @@
     request = urllib.request.Request (url=url,data=data, headers=headers, method='POST')
     response = urllib.request.urlopen (request)
     reward = float((str(response.read(),'utf-8')))
-    return float(reward)
+    return reward
