@@ -1,7 +1,7 @@
 ﻿def reward_function(params):
     import json
     import urllib.request
-    url = 'https://app-sw-dr.azurewebsites.net/reward'
+    url = ''
     data_string = json.dumps (params)
     data = bytes(data_string,'utf-8')
     headers = {'Content-Type': 'application/json'}
